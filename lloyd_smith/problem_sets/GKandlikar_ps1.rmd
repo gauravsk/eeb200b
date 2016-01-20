@@ -8,9 +8,9 @@ output: pdf_document
 ## Question 1
 \textsc{The logistic model of density density dependence assumes that the per capita growth rate of the population decreases linearly with increasing N. However, it is not necessarily true that per capita growth rates deecrease monotonically with N. Under some circumstances per capita growth rates may increase with N at very low densities, then decrease as densities become higher. This phenomenon is called the Allee effect. The following equation describes a continuous time population model with an Allee effect combined with logistic density dependance:}
 
-$$\frac{dN}{dT} = rN (1-\frac{N}{K})(\frac{N}{A}-1)$$
+$$\frac{dN}{dT} = rN \left(1-\frac{N}{K}\right)\left(\frac{N}{A}-1\right)$$
 
-### A: Find all equilibrium points of this model.
+### Part A: Find all equilibrium points of this model.
 
 Equilibrium points occur where $\frac{dN}{dT} = 0$. This can happen in three ways: 
 
@@ -20,7 +20,7 @@ $N/K = 1$, in other words, $N = K$
 
 $N/A = 1$, in other words, $N = A$   
 
-### B: Sketch the population growth rate $dN/dT$ as a function of $N$ for $r > 0$. Predict stability of the equilibria.   
+### Part B: Sketch the population growth rate $dN/dT$ as a function of $N$ for $r > 0$. Predict stability of the equilibria.   
 
 
 \begin{figure}[h]
@@ -30,9 +30,7 @@ $N/A = 1$, in other words, $N = A$
 
 Based on the slope of the curve as it passes through equilibrium points, I expect $N = 0$ to be a **stable** equilibrium, $N = A$ to be an **unstable** equilibrium, and $N = K$ to be a **stable** equilibrium.
 
-\clearpage
-
-### C: Use `R` to plot the population growth rate $dN/dT$ as a function of $N$ for $r < 0$. Mark the stability of the equilibria. 
+### Part C: Use `R` to plot the population growth rate $dN/dT$ as a function of $N$ for $r < 0$. Mark the stability of the equilibria. 
 
 
 ```{r}
@@ -52,53 +50,55 @@ abline(v = K, lty = 2, lwd = 0.75)
 axis(side = 1, labels = c("A","K"), at = c(A, K), padj = -1.2)
 ```
 
+Equilibrium point $N = 0$ is unstable; $N = A$ is a stable equilibrium, and $N = K$ is an unstable equilibrium.
+
 \clearpage
 
-### D: Confirm predictions for $r > 0$ using local stabilty analysis 
+### Part D: Confirm predictions for $r > 0$ using local stabilty analysis 
 
 *Step 1*: Differentiate $f(N)$ with respect to $N$ to obtain $df/dN$   
 
 $$\frac{dN}{dT} = (rN)(1-\frac{N}{K})(\frac{N}{A}-1)$$   
 $$ = (rN - \frac{rN^{2}}{K}) (\frac{N}{A}-1)$$
-$$ = \frac{rN^{2}}{A} - rN = \frac{rN^{3}}{AK} + \frac{rN^{2}}{K} = \frac{dN}{dT}$$
+$$ = \frac{rN^{2}}{A} - rN - \frac{rN^{3}}{AK} + \frac{rN^{2}}{K} = \frac{dN}{dT}$$
 
 Now, take the derivative:   
 
 $$\frac{df}{dN} = \frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N$$
 
-*Step 2*: Replace every instance of $N$ in the derivative with the equilibrium value $\hat{N}$ to obtain $\frac{df}{dN}|_{N = \hat{N}}$
+*Step 2*: Replace every instance of $N$ in the derivative with the equilibrium value $\hat{N}$ to obtain $\frac{df}{dN}\bigg|_{N = \hat{N}}$
 
 *First*, assess this at equilibrium point $N = K$:  
 
-$$\frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N |_{N = K}$$  
+$$\frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N \bigg|_{N = K}$$  
 $$ = \frac{2rK}{A} - r - \frac{3rK}{A} + 2r$$ 
 $$ = \frac{-rK}{A} + r$$
 
-Given that $r > 0$ and $K > A$, the left (subtractive) component of the above equation is always a negative number with a larger absolute value than the right (additive) side; so, the *the value is always negative, and the equilibrium is stable for the equilibrium point* $N = K$.  
+Given that $r > 0$ and $K > A$, the left (subtractive) component of the above equation is always a negative number with a larger absolute value than the right (additive) side; so, the *the value is always negative, and **the equilibrium is stable for the equilibrium point $N = K$.***  
 
 *Second*, assess this at equilibrium point $N = A$:  
 
-$$\frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N |_{N = A}$$  
+$$\frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N \bigg|_{N = A}$$  
 $$ = 2r - r - \frac{3rA}{A} + \frac{2rA}{K}$$  
 $$ = r - \frac{rA}{K}$$
 
-Given that $r > 0$ and $K > A$, the left (additive) side of the above equation is always a positive number with a larger absolute value than the right (subtractive) side; so, *the value is always positive, and the equilibrium is unstable for the equilibrium point* $N = A$. 
+Given that $r > 0$ and $K > A$, the left (additive) side of the above equation is always a positive number with a larger absolute value than the right (subtractive) side; so, *the value is always positive, and **the equilibrium is unstable for the equilibrium point $N = A$.*** 
 
 *Third*, assess this at equilibrium point $N = 0$:
-$$\frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N |_{N = 0}$$ 
+$$\frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N \bigg|_{N = 0}$$ 
 $$ = -r$$
 
-This number is always negative given $r > 0$, so *the equilibrium point is stable for* $N = 0$.  
+This number is always negative given $r > 0$, so ***the equilibrium point is stable for $N = 0$.***  
 
-### E: What does this mean for the fate of populations with $N < A$? How about for populations with $A < N < K$?  
+### Part E: What does this mean for the fate of populations with $N < A$? How about for populations with $A < N < K$?  
 
 Populations with $N < A$ are predicted to shrink towards 0, whereas populations with $A < N < K$ are predicted to rise to $K$.
 
-### F: Describe three mechanisms that could give rise to Allee effects in a population.  
+### Part F: Describe three mechanisms that could give rise to Allee effects in a population.  
 
 Allee effects describe a rise in $\frac{dN}{Ndt}$, or per capita growth rates, at low values of $N$. Many biological drivers can cause an Allee effect:
 
-- In sexually reproducing organisms, individuals may be unable to find mates when the population is at a very low density. As density increases from very low to slightly higher, each individual may be more like to have a succesful mating- thus driving up the per capita growth rate. This mechanism can work in both animal and plant populations (e.g. the likelihood of a pollinator finding a conspecific may initially increase with population density).   
+- In populations of sexually reproducing organisms, individuals may be unable to find mates when the population is at a very low density. As density increases from very low to slightly higher, each individual may be more like to have a succesful mating- thus driving up the per capita growth rate. This mechanism can work in both animal and plant populations (e.g. the likelihood of a pollinator finding a conspecific may initially increase with population density).   
 - Populations of cooperative organisms might experience an Allee effect if, for example, individuals are unable to harvest enough food at low population densities. One can imagine a small wolf pack that is unable to kill any prey, and that the pack would fare better if it had more individuals to participate in the hunt. Similarly, a microbial population that acquires resources by secreting enzymes to break down molecules in the environment may be more efficient at resource acquisition at slightly higher population densities than at very low densities.
 - There are bound to be more genetic problems in small populations than in larger populations- inbreeding among small populations can drive the expression of deleterious alleles, drift can drastically reduce variation, etc. 
 
@@ -106,6 +106,12 @@ Allee effects describe a rise in $\frac{dN}{Ndt}$, or per capita growth rates, a
 
 ## Question 2
 \textsc{Briefly describe the logic underlying local stability analysis for nonlinear population models. What is the role of Taylor expansion? What is the relation to linear models of population growth? Why is it "local" stability analysis?}
+
+In local stability analysis, we calculate the slope of dN/dT at or near an equilibrium point. When the slope is negative as the function $dN/dT$ crosses $0$, it means that the population is shrinking to the left of the equilibrium and growing to its right- in other words, it is moving away from the equilibrium point, which is therefore unstable. If the slope of $dN/dT$ is positive as the function crosses $0$, it means that the population is growing to the left, and shrinking to the right of the equilibrium point- in other words, it is converging on the point from both sides.
+
+Taylor expansion helps us approximate the slope of the curve near a given point - here, the equilibrium point. We then can use the logic above to determine the stability of the equilibrium. 
+
+This analysis is called "local" because we an only assess the stability of a single equilibrium point at a time. A model can produce multiple equilibria- the Allee effect model in Q1, for example, has 3. The slope of $dN/dT$ at each equilibrium point needs to be estimated separately to make predictions about that point. 
 
 \clearpage
 
@@ -145,7 +151,7 @@ As above, a second equilibrium point occurs where $N_{t} = 0$.
 
 *First**, local stability analysis for the Beverton-Holt Model***: 
 
-We first derive the Beverton-Holt model with respect to $N$ (see end of document) and then evaluate at $N = K$ and $N = 0$:
+We first derive the Beverton-Holt model with respect to $N$ (see end of document for steps) and then evaluate at $N = K$ and $N = 0$:
 $$\frac{d}{dN} = \frac{K^{2}R}{(K+(R-1)N)^{2}}\bigg|_{N = 0; N=K}$$
 
 
@@ -153,13 +159,16 @@ $$\frac{d}{dN} = \frac{K^{2}R}{(K+(R-1)N)^{2}}\bigg|_{N = 0; N=K}$$
 |:----:|:----:|:---------:|:---------:|
 |$N = 0$| (0, 1)|0 < $\lambda$ < 1|stable, nonoscillatory|
 |$N = 0$| (1,$\infty$)|$\lambda$ > 1|unstable, nonoscillatory|
+| | | | |
 |$N = K$| (0, 1)|$\lambda$ > 1|unstable, nonoscillatory|
 |$N = K$| (1,$\infty$)|1 < $\lambda$ < 0|stable, nonoscillatory|
 
 
+----------
+
 *Second**, local stability analysis for the Ricker Model***:   
 
-We first derive the Ricker model with respect to $N$ (see end of document) and evaluate at $N = K$:
+We first derive the Ricker model with respect to $N$ (see end of document for steps) and evaluate at $N = K$:
 $$\frac{d}{dN} = exp\left(R\left(1-\frac{N_{t}}{K}\right)\right)*\left(1-\frac{RN_{t}}{K}\right)\bigg|_{N = 0; N = K}$$
 
 By substituting in values of $R$, we can develop the following:   
@@ -168,6 +177,7 @@ By substituting in values of $R$, we can develop the following:
 |:----:|:----:|:---------:|:---------:|
 |$N = 0$| (-$\infty$,0)|0 < $\lambda$ < 1|stable, nonoscillatory|
 |$N = 0$| (0, $\infty$)|$\lambda$ > 1|unstable, nonoscillatory|
+| | | | |
 |$N = K$| (-$\infty$,0)|$\lambda$ > 1|unstable, nonoscillatory|
 |$N = K$| (0,1)|0 < $\lambda$ < 1|stable, nonoscillatory|
 |$N = K$| (1,2)|-1 < $\lambda$ < 0|stable, oscillatory|
@@ -194,7 +204,7 @@ abline(h = 100)
 abline(v = 100)
 ```
 
-This model is unlikely to show chaotic behavior or undamped oscillations- cobwebbing of the $N_{t+1}$ v $N_{t}$ graph suggests that the model will move unidirectionally. ***Think more about this!***
+This model is unlikely to show chaotic behavior or undamped oscillations- cobwebbing of the $N_{t+1}$ v $N_{t}$ graph suggests that the model will move unidirectionally. One intuition here might be that the $N_{t+1}$ does not exceed $K$ before $N_{t}$ does- so that chances for oscillation above and below $K$ seems unlikely in this model. 
 
 ```{r}
 # Second, plot for Ricker model
@@ -213,7 +223,7 @@ abline(h = 100)
 abline(v = 100)
 ```
 
-Chaotic behaviour and undamped oscillations are likely to arise in the Ricker model at high values of $R$- cobwebbing suggests that the population sizes are likely to jump around more. ***Think more about this!***
+Chaotic behaviour and undamped oscillations are likely to arise in the Ricker model at high values of $R$- cobwebbing suggests that the populations will switch from being above and below $K$ for sufficiently high $Rs$. 
 
 ### Part D: Write a script to simulate dynamics of the model (i.e. $N_{t}$ vs $t$). For the largest equilibrium point (i.e. highest $N^{*}$) use simulations to verify the results of local stability analyses. Explore different values of $R$ to test predictions about whether chaos is possible. If chaotic, demonstrate extreme sensitivity to initial conditions by differeing $N_{0}$ by tiny bits. Contrast the chaotic model to ones where the dynamics are stable. 
 
@@ -240,6 +250,9 @@ matplot(bevholt_output, lty = 1, lwd = 3, type = "l", col = colors,
 legend(x = 500, y = 45, lty = 1, lwd = 2, legend = paste("R = ", Rs),
        col = colors, ncol = 2, bty = "n")
 ```
+This graph confirms our predictions that unstable/oscillatory dynamics do not arise in the Beverton-Holt model- the trajectory of $N$ is monotonic and tending towards $K$ when $R>1$ or towards 0 when $R<1$.
+
+----------
 
 We can repeat this exercise for the Ricker model:
 ```{r}
@@ -263,12 +276,12 @@ colors <- wesanderson::wes_palette("Darjeeling", n = length(Rs), type = "c")
 matplot(ricker_output, lty = 1, lwd = 2, type = "l", col = colors,
         main = "Dynamics of Ricker model (low values of R)",
         xlab = "time", ylab = "N")
-legend("bottomright", lty = 1, lwd = 2, bty = "n", col = colors, legend = paste("R = ", Rs))
+legend("bottomright", lty = 1, lwd = 2, bty = "n", col = colors, legend = paste("R = ", Rs), ncol = 2)
 ```
 
 The graph above shows the dynamics of the Ricker Model with values of $R$ ranging from 0.1 to 1.9- we see that for $R > 0$, all models converge to $N_{t} = K$. For $1 < R < 2$, we begin to see damped oscillations that converge onto $K$- this is most obvious for the line of $R = 1.9$, but is true of all $R > 1$. 
 
-Chaotic behaviour tends to arise when we use very large values of $R$. The answer to Q. 3B above suggests that at $R>2$ the system will begin to assume unstable oscillatory dynamics:
+Chaotic behaviour tends to arise when we use very large values of $R$. The answer to Q. 3B above suggests that at $R>2$ the system will begin to assume unstable oscillatory dynamics. We can confirm this with simulation:
 
 ```{r}
 Rs <- c(2.2, 3)
@@ -280,17 +293,31 @@ matplot(ricker_output, lty = 1, lwd = 2, type = "l", col = colors,
 legend("topleft", lty = 1, lwd = 2, bty = "n", col = colors, legend = paste("R = ", Rs))
 ```
 
+----------
+
 Now, we should demonstrate the impact of this chaotic behaviour by **varying the values of $N_{0}$ by small amounts**. I will do this by simulating dynamics for $R = 0.5$ and $R = 3$
 
 ```{r}
-N0s <- c(1:10)
+N0s <- seq(from = 4, to = 6, by = 0.2)
 ricker_stable <- sapply(N0s, function(x) ricker(R = 0.5, N0 = x, K = 100, t = 150))
 ricker_chaos <- sapply(N0s, function(x) ricker(R = 3, N0 = x, K = 100, t = 150))
 
 final_Ns <- cbind(N0s, ricker_stable[150, ], ricker_chaos[150, ])
-colnames(final_Ns) <- c("N0", "final N (R = 0.5)", "final N (R = 3)")
+colnames(final_Ns) <- c("$N_{0}$", "$N_{150}$ (R = 0.5)", "$N_{150}$ (R = 3)")
 knitr::kable(final_Ns, align = "c")
 ```
+
+We can also show this in a plot:
+```{r}
+par(mfrow = c(1,2), oma = c(0,0,4,0))
+matplot(ricker_stable, type = "l", lty = 1, main = "R = 0.5", ylab = "N", xlab = "time")
+matplot(ricker_chaos, type = "l", lty = 1, main= "R = 3", ylab = "N", xlab = "time", lwd = 0.25)
+mtext(side = 3, "Dynamics of Ricker model, varying N0s", outer = T)
+```
+
+The graphs above show that slight variations in $N_{0}$ do not impact the trajectory of $N$ or its stable value when $R < 2$ (in the "stable" region), but have a dramatic impact on the trajectory of $N$ when $R > 2$ (in the "unstable" region.)
+
+----------
 
 Now, we can demonstrate the stability of these models by **perturbing the system from $N = K$ to slight deviations**, and check if N returns to K.   
 
@@ -321,6 +348,51 @@ mtext(side = 3, outer = T,
 ```
 
 The plots confirm that when $R < 1$, the dynamics are stable and non-oscillatory, when $1 < R < 2$, the dynamics are stable and oscillatory, and when $R > 2$, the dynamics are unstable and oscillatory.
+
+\clearpage
+
+#### Part E: Use a computer to make a bifurcation plot showing the long term model dynamics over the interesting range of $R$. 
+
+A bifurcation plot shows the stable states of the model as a function of $R$.   
+
+```{r, align = "center", results= "hold"}
+# Make a sequence of Rs- here from 0.5 to 8, by 0.01
+Rs <- seq(from = -0.5, to = 8, by = 0.01)
+
+# Calculate the trajectories of N for all Rs
+trajectories <- sapply(Rs, function(x) ricker(R = x, N0 = 2, K = 1500, t = 1000))
+# Floor the whole data frame - decimal values of N don't make sense
+trajectories <- floor(trajectories)
+# For each value of R, figure out how many UNIQUE values of N
+# there are after 800 generations.
+# If the system is stable, it should reach equilibrium by now
+# and there should just be one unique value.
+# If the system is unstable, it might have multiple values.
+uniques <- apply(trajectories, 2, function(x) unique(x[800:1000]))
+
+par(mfrow = c(1,1))
+plot(1, type = "n", xlim = c(-1, 9), ylim = c(0, 15000), xlab = "R",
+     ylab = "N", main = "Bifurcation plot of Ricker model")
+
+# For each value of R, plot R on the X axis and the unique values
+# of N on the Y axis
+for(ii in 1:length(uniques)) {
+  points(x = rep(Rs[ii], length(uniques[[ii]])), y = uniques[[ii]],
+         pch = 16, cex = .2)
+}
+
+```
+
+These bifurcation plots are predicted to be fractals- we can zoom in to confirm that it is a repeating pattern:
+```{r}
+plot(1, type = "n", xlim = c(2, 4), ylim = c(0, 10000), xlab = "R", 
+     ylab = "N", main = "Bifurcation plot of Ricker Model (zoomed)")
+
+for(ii in 1:length(uniques)) {
+  points(x = rep(Rs[ii], length(uniques[[ii]])), y = uniques[[ii]],
+         pch = 16, cex = .5)
+}
+```
 
 \clearpage
 
