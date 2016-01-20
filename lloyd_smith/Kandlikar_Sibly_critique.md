@@ -1,0 +1,14 @@
+---
+output: word_document
+---
+
+Here, the authors use a database of population sizes over time to describe the relationship between population growth rate (*pgr*) and population density. Specifically, they iterated over a list of possible values for $\theta$ in the equation $pgr = r_{0}[1-(N/K)^{\theta}]$. The authors find that most animals from all major taxonomic group tend to have $\theta \lt 1$: in other words, a concave relationship between *pgr*, or a drastic in *pgr* with small increases in N when N is small. An implication of this result is that animal populations may tend to bigger than their carrying capacities more often than not.
+
++ This is a great use of what seems to be a very useful resource for population dynamics research. The mismatch between the observation that life history and shape of *pgr*-N relation are unrelated, and the colloquial expectation that large bodied animals tend to have a more convex relationship, shows how empirical observations can be used to test and refine our expectations of the natural world.
++ I appreciated the clear buildup of the dynamics equations - the impact of various values of $\theta$ on the pgr-N relationship was well developed. On the other hand, it is not clear to me why we would expect the *pgr*-N relationship to start at N=1 rather than N=0, as described in SOM, for all animals. I would expect the N at which *pgr* changes with N to depend on factors like animal size. If all N>0 produce similar results, this might not be a big deal. On the topic of SOM, it is not clear to me that $ln(N_{t+1}/{N_t})$ is exactly the *pgr* as described in Equation 1. 
+
+- This analysis seems to be very sensitive to potential biases in the types of species included in the GPDD. I would have liked to see some discussion of any potential bias in the species list- for example, if they tend to be weedy or agricultural species, then extending it to wild species may not be appropriate. I am not too familiar with animal databases, but if we were working with plants here, then having a bias towards tractable annual species may muddle interpretations.
+- Some discussion about other drivers of a concave *pgr*-N relationship is warranted here. It is not clear to me why most animals would mechanistically have $\theta \lt 1$, and other drivers like time lags, which were here dismissed due to computational intractability may also contribute to the pattern.
+- I was a bit surprised that the authors chose to iterate over a list of possible $\theta$s rather than employ a Bayesian approach to estimate a value and confidence intervals. Perhaps I am biased by the many ABC exercises we did with Dr. Lohmueller, but it seems prudent to allow the parameter to vary randomly across the given range (-100 to 100, with a specified density function) and then subset to the estimates with a low error.
+
+

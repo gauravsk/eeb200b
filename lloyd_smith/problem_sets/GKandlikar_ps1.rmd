@@ -1,0 +1,369 @@
+---
+title: 'EEB 200B: Lloyd-Smith PS 1'
+author: "Gaurav Kandlikar"
+date: "January 15, 2016"
+output: pdf_document
+---
+
+## Question 1
+\textsc{The logistic model of density density dependence assumes that the per capita growth rate of the population decreases linearly with increasing N. However, it is not necessarily true that per capita growth rates deecrease monotonically with N. Under some circumstances per capita growth rates may increase with N at very low densities, then decrease as densities become higher. This phenomenon is called the Allee effect. The following equation describes a continuous time population model with an Allee effect combined with logistic density dependance:}
+
+$$\frac{dN}{dT} = rN (1-\frac{N}{K})(\frac{N}{A}-1)$$
+
+### A: Find all equilibrium points of this model.
+
+Equilibrium points occur where $\frac{dN}{dT} = 0$. This can happen in three ways: 
+
+$N = 0$   
+
+$N/K = 1$, in other words, $N = K$  
+
+$N/A = 1$, in other words, $N = A$   
+
+### B: Sketch the population growth rate $dN/dT$ as a function of $N$ for $r > 0$. Predict stability of the equilibria.   
+
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[height=80mm]{figures/ps1_q1pb.pdf}
+\end{figure}
+
+Based on the slope of the curve as it passes through equilibrium points, I expect $N = 0$ to be a **stable** equilibrium, $N = A$ to be an **unstable** equilibrium, and $N = K$ to be a **stable** equilibrium.
+
+\clearpage
+
+### C: Use `R` to plot the population growth rate $dN/dT$ as a function of $N$ for $r < 0$. Mark the stability of the equilibria. 
+
+
+```{r}
+# Define parameters
+r <- -0.01
+K = 50
+A = 5
+
+# use curve to plot dN/dT vs N
+curve(r*x*(1-x/K)*((x/A)-1), from = 0, to = 55, 
+      xlab = "N", ylab = "dN/dT", lwd = 2, 
+      main = "dN/dT v N for r < 0")
+# Add lines for dN/dT = 0, N = A, N = K
+abline(h = 0, lty = 2, lwd = 0.75)
+abline(v = A, lty = 2, lwd = 0.75)
+abline(v = K, lty = 2, lwd = 0.75)
+axis(side = 1, labels = c("A","K"), at = c(A, K), padj = -1.2)
+```
+
+\clearpage
+
+### D: Confirm predictions for $r > 0$ using local stabilty analysis 
+
+*Step 1*: Differentiate $f(N)$ with respect to $N$ to obtain $df/dN$   
+
+$$\frac{dN}{dT} = (rN)(1-\frac{N}{K})(\frac{N}{A}-1)$$   
+$$ = (rN - \frac{rN^{2}}{K}) (\frac{N}{A}-1)$$
+$$ = \frac{rN^{2}}{A} - rN = \frac{rN^{3}}{AK} + \frac{rN^{2}}{K} = \frac{dN}{dT}$$
+
+Now, take the derivative:   
+
+$$\frac{df}{dN} = \frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N$$
+
+*Step 2*: Replace every instance of $N$ in the derivative with the equilibrium value $\hat{N}$ to obtain $\frac{df}{dN}|_{N = \hat{N}}$
+
+*First*, assess this at equilibrium point $N = K$:  
+
+$$\frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N |_{N = K}$$  
+$$ = \frac{2rK}{A} - r - \frac{3rK}{A} + 2r$$ 
+$$ = \frac{-rK}{A} + r$$
+
+Given that $r > 0$ and $K > A$, the left (subtractive) component of the above equation is always a negative number with a larger absolute value than the right (additive) side; so, the *the value is always negative, and the equilibrium is stable for the equilibrium point* $N = K$.  
+
+*Second*, assess this at equilibrium point $N = A$:  
+
+$$\frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N |_{N = A}$$  
+$$ = 2r - r - \frac{3rA}{A} + \frac{2rA}{K}$$  
+$$ = r - \frac{rA}{K}$$
+
+Given that $r > 0$ and $K > A$, the left (additive) side of the above equation is always a positive number with a larger absolute value than the right (subtractive) side; so, *the value is always positive, and the equilibrium is unstable for the equilibrium point* $N = A$. 
+
+*Third*, assess this at equilibrium point $N = 0$:
+$$\frac{2r}{A}N - r - \frac{3r}{AK} N^{2} + \frac{2r}{K}N |_{N = 0}$$ 
+$$ = -r$$
+
+This number is always negative given $r > 0$, so *the equilibrium point is stable for* $N = 0$.  
+
+### E: What does this mean for the fate of populations with $N < A$? How about for populations with $A < N < K$?  
+
+Populations with $N < A$ are predicted to shrink towards 0, whereas populations with $A < N < K$ are predicted to rise to $K$.
+
+### F: Describe three mechanisms that could give rise to Allee effects in a population.  
+
+Allee effects describe a rise in $\frac{dN}{Ndt}$, or per capita growth rates, at low values of $N$. Many biological drivers can cause an Allee effect:
+
+- In sexually reproducing organisms, individuals may be unable to find mates when the population is at a very low density. As density increases from very low to slightly higher, each individual may be more like to have a succesful mating- thus driving up the per capita growth rate. This mechanism can work in both animal and plant populations (e.g. the likelihood of a pollinator finding a conspecific may initially increase with population density).   
+- Populations of cooperative organisms might experience an Allee effect if, for example, individuals are unable to harvest enough food at low population densities. One can imagine a small wolf pack that is unable to kill any prey, and that the pack would fare better if it had more individuals to participate in the hunt. Similarly, a microbial population that acquires resources by secreting enzymes to break down molecules in the environment may be more efficient at resource acquisition at slightly higher population densities than at very low densities.
+- There are bound to be more genetic problems in small populations than in larger populations- inbreeding among small populations can drive the expression of deleterious alleles, drift can drastically reduce variation, etc. 
+
+\clearpage
+
+## Question 2
+\textsc{Briefly describe the logic underlying local stability analysis for nonlinear population models. What is the role of Taylor expansion? What is the relation to linear models of population growth? Why is it "local" stability analysis?}
+
+\clearpage
+
+## Question 3
+\textsc{Consider two discrete time models for population dynamics:}
+
+- The Beverton-Holt model: 
+$$N_{t+1} = \frac{RN_{t}}{1+[(R-1)/K]N_{t}}, R,K > 0$$
+
+- The Ricker model:  
+$$N_{t+1} = N_{t} \text{  exp }\left[R\left(1-\frac{N_{t}}{K}\right)\right], K > 0$$
+
+### Part A: Find all equilibrium points 
+
+At equilibrium, population size is not changing, so that $N_{t+1} = N_{t}$. We can solve both models for when this happens: 
+
+*Beverton-Holt model*:  
+$$N_{t+1} = N_{t} = \frac{RN_{t}}{1+[(R-1)/K]N_{t}}, R,K > 0$$
+$$1 = \frac{R}{1+[(R-1)/K]N_{t}}$$
+$$R = 1+[(R-1)/K]N_{t}$$
+$$R-1 = \frac{R-1}{K}N_{t}$$
+$$N_{t} = K$$
+A second equilibrium point occurs where $N_{t} = 0$. 
+
+*Ricker model*:  
+$$N_{t+1} = N_{t} = N_{t} \text{  exp }\left[R\left(1-\frac{N_{t}}{K}\right)\right], K > 0$$
+$$1 = \text{ exp }[R(1-\frac{N_{t}}{K})], K > 0$$
+$$ln(1) = ln(\text{exp }[R(1-\frac{N_{t}}{K})])$$
+$$0 = R(1-\frac{N_{t}}{K})$$
+$$1 = \frac{N_{t}}{K}$$
+$$N_{t} = K$$
+As above, a second equilibrium point occurs where $N_{t} = 0$. 
+
+\clearpage
+
+### Part B:  Calculate local stability criteria for each equilibrium point. Over what ranges of $R$ is each equilibrium point stable or unstable? Also specify ranges where $N$ will oscillate.  
+
+*First**, local stability analysis for the Beverton-Holt Model***: 
+
+We first derive the Beverton-Holt model with respect to $N$ (see end of document) and then evaluate at $N = K$ and $N = 0$:
+$$\frac{d}{dN} = \frac{K^{2}R}{(K+(R-1)N)^{2}}\bigg|_{N = 0; N=K}$$
+
+
+|Equilibrium point| $R$  | $\lambda$ | behaviour |
+|:----:|:----:|:---------:|:---------:|
+|$N = 0$| (0, 1)|0 < $\lambda$ < 1|stable, nonoscillatory|
+|$N = 0$| (1,$\infty$)|$\lambda$ > 1|unstable, nonoscillatory|
+|$N = K$| (0, 1)|$\lambda$ > 1|unstable, nonoscillatory|
+|$N = K$| (1,$\infty$)|1 < $\lambda$ < 0|stable, nonoscillatory|
+
+
+*Second**, local stability analysis for the Ricker Model***:   
+
+We first derive the Ricker model with respect to $N$ (see end of document) and evaluate at $N = K$:
+$$\frac{d}{dN} = exp\left(R\left(1-\frac{N_{t}}{K}\right)\right)*\left(1-\frac{RN_{t}}{K}\right)\bigg|_{N = 0; N = K}$$
+
+By substituting in values of $R$, we can develop the following:   
+
+|Equilibrium point| $R$  | $\lambda$ | behaviour |
+|:----:|:----:|:---------:|:---------:|
+|$N = 0$| (-$\infty$,0)|0 < $\lambda$ < 1|stable, nonoscillatory|
+|$N = 0$| (0, $\infty$)|$\lambda$ > 1|unstable, nonoscillatory|
+|$N = K$| (-$\infty$,0)|$\lambda$ > 1|unstable, nonoscillatory|
+|$N = K$| (0,1)|0 < $\lambda$ < 1|stable, nonoscillatory|
+|$N = K$| (1,2)|-1 < $\lambda$ < 0|stable, oscillatory|
+|$N = K$| (2,$\infty$)| $\lambda$ < -2 |unstable, oscillatory|
+
+
+### Part C: Assume $K = 100$. Use `R` to plot $N_{t+1}$ vs $N_{t}$ for a range of values of $R$. Based on these plots, can the model display undamped oscillations or chaotic dynamics for any values of $R$? Why/not?
+
+```{r}
+# Make a vector of Rs and define K = 100
+Rs = seq(from = 0.4, to = 3, by = 0.4)
+K = 100
+# First, plot for Beverton-Holt Model
+plot(1, type = "n",  xlab = "Nt", ylab = "Nt+1", 
+     main = "Population growth in Beverton Holt Model", 
+     xlim = c(0, 150), ylim = c(1, 250))
+colors <- wesanderson::wes_palette("Darjeeling", n = length(Rs), type = "continuous")
+for(ii in 1:length(Rs)) {
+  curve((Rs[ii]*x)/(1+((Rs[ii]-1)/K)*x), from = 1, to = 150, add = T, col = colors[ii])
+}
+legend("topleft", lwd = 2, lty = 1, bty = "n",
+       legend = paste("R = ", Rs), col = colors, ncol = 2)
+abline(h = 100)
+abline(v = 100)
+```
+
+This model is unlikely to show chaotic behavior or undamped oscillations- cobwebbing of the $N_{t+1}$ v $N_{t}$ graph suggests that the model will move unidirectionally. ***Think more about this!***
+
+```{r}
+# Second, plot for Ricker model
+Rs = seq(from = -0.55, to = 2.6, by = 0.5)
+K = 100
+plot(1, type = "n",  xlab = "Nt", ylab = "Nt+1", 
+     main = "Population growth in Ricker Model", 
+     xlim = c(0, 150), ylim = c(1, 200))
+colors <- wesanderson::wes_palette("Darjeeling", n = length(Rs), type = "continuous")
+for(ii in 1:length(Rs)){
+  curve(x*(exp(Rs[ii]*(1-x/K))), from = 0, to = 150, add = T, col = colors[ii])
+}
+legend("topleft", lwd = 2, lty = 1, bty = "n",
+       legend = paste("R = ", Rs), col = colors, ncol = 2)
+abline(h = 100)
+abline(v = 100)
+```
+
+Chaotic behaviour and undamped oscillations are likely to arise in the Ricker model at high values of $R$- cobwebbing suggests that the population sizes are likely to jump around more. ***Think more about this!***
+
+### Part D: Write a script to simulate dynamics of the model (i.e. $N_{t}$ vs $t$). For the largest equilibrium point (i.e. highest $N^{*}$) use simulations to verify the results of local stability analyses. Explore different values of $R$ to test predictions about whether chaos is possible. If chaotic, demonstrate extreme sensitivity to initial conditions by differeing $N_{0}$ by tiny bits. Contrast the chaotic model to ones where the dynamics are stable. 
+
+```{r}
+# First, Beverton-Holt 
+bevholt <- function(R = 1, N0 = 5, K = 100, t = 1000) {
+  timesteps <- t
+  Nt <- numeric(timesteps)
+  Nt[1] <- N0
+  for (i in 2:timesteps) {
+    Nt[i] <- (R*Nt[i-1])/(1+((R-1)/K)*Nt[i-1])
+  } 
+  return(Nt)
+}
+
+# Create a range of Rs- recall that all R > 0 in BevHolt model
+
+Rs <- c(0.1, 0.5, 0.96, 1, 1.06, 1.1, 1.5)
+bevholt_output <- sapply(Rs, function(x) bevholt(R = x))
+colors <- wesanderson::wes_palette("Darjeeling", n = length(Rs), type = "c")
+matplot(bevholt_output, lty = 1, lwd = 3, type = "l", col = colors,
+        main = "Dynamics of Beverton-Holt model",
+        xlab = "time", ylab = "N")
+legend(x = 500, y = 45, lty = 1, lwd = 2, legend = paste("R = ", Rs),
+       col = colors, ncol = 2, bty = "n")
+```
+
+We can repeat this exercise for the Ricker model:
+```{r}
+# Second, Ricker
+ricker <- function(R = 1, N0 = 5, K = 100, t = 1000) {
+  timesteps <- t
+  Nt <- numeric(timesteps)
+  Nt[1] <- N0
+  for (i in 2:timesteps) {
+    Nt[i] <- Nt[i-1]*exp(R*(1-(Nt[i-1]/K)))
+  } 
+  return(Nt)
+}
+
+# Create a range of Rs from slightly below 1 to slightly above
+# I am going to put very high values of R on a separate graph
+# Having them all on one makes things very messy!
+Rs <- c(-0.5, 0.1, 0.5, 1, 1.1, 1.9)
+ricker_output <- sapply(Rs, function(x) ricker(R = x, t = 100))
+colors <- wesanderson::wes_palette("Darjeeling", n = length(Rs), type = "c")
+matplot(ricker_output, lty = 1, lwd = 2, type = "l", col = colors,
+        main = "Dynamics of Ricker model (low values of R)",
+        xlab = "time", ylab = "N")
+legend("bottomright", lty = 1, lwd = 2, bty = "n", col = colors, legend = paste("R = ", Rs))
+```
+
+The graph above shows the dynamics of the Ricker Model with values of $R$ ranging from 0.1 to 1.9- we see that for $R > 0$, all models converge to $N_{t} = K$. For $1 < R < 2$, we begin to see damped oscillations that converge onto $K$- this is most obvious for the line of $R = 1.9$, but is true of all $R > 1$. 
+
+Chaotic behaviour tends to arise when we use very large values of $R$. The answer to Q. 3B above suggests that at $R>2$ the system will begin to assume unstable oscillatory dynamics:
+
+```{r}
+Rs <- c(2.2, 3)
+ricker_output <- sapply(Rs, function(x) ricker(R = x, t = 100))
+colors <- wesanderson::wes_palette("Darjeeling", n = length(Rs), type = "c")
+matplot(ricker_output, lty = 1, lwd = 2, type = "l", col = colors,
+        main = "Dynamics of Ricker model (large values of R)", 
+        ylim = c(0, 300), xlab = "time", ylab = "N")
+legend("topleft", lty = 1, lwd = 2, bty = "n", col = colors, legend = paste("R = ", Rs))
+```
+
+Now, we should demonstrate the impact of this chaotic behaviour by **varying the values of $N_{0}$ by small amounts**. I will do this by simulating dynamics for $R = 0.5$ and $R = 3$
+
+```{r}
+N0s <- c(1:10)
+ricker_stable <- sapply(N0s, function(x) ricker(R = 0.5, N0 = x, K = 100, t = 150))
+ricker_chaos <- sapply(N0s, function(x) ricker(R = 3, N0 = x, K = 100, t = 150))
+
+final_Ns <- cbind(N0s, ricker_stable[150, ], ricker_chaos[150, ])
+colnames(final_Ns) <- c("N0", "final N (R = 0.5)", "final N (R = 3)")
+knitr::kable(final_Ns, align = "c")
+```
+
+Now, we can demonstrate the stability of these models by **perturbing the system from $N = K$ to slight deviations**, and check if N returns to K.   
+
+First for the Beverton-Holt model:
+```{r, fig.height = 6}
+Ns <- seq(from = 97, to = 107)
+par(mfrow = c(2,2), oma = c(0,0,3,0))
+for(RR in c(0.1, 0.9, 1.1, 2.1)) {
+  matplot(sapply(Ns, function(x) bevholt(R = RR, N0 = x, K = 100, t = 50)),
+          type = "l", lty = 1, main = paste("R = ", RR), ylab = "N", xlab = "time")
+}
+
+mtext(side = 3, outer = T, 
+      text = "Dynamics of Beverton-Holt model: perturbing slightly from N = K (here, 100)")
+```
+These plots confirm that when $R > 1$ the model shows stable, non-oscillatory dynamics, and when $0 < R < 1$, it shows unstable, non-oscillatory dynamics. 
+
+And now, for the Ricker model:
+```{r, fig.height = 6}
+Ns <- seq(from = 97, to = 107)
+par(mfrow = c(2,3), oma = c(0,0,3,0))
+for (RR in c(-0.1, 0.9, 1.1, 1.5, 2.1)) {
+  matplot(sapply(Ns, function(x) ricker(R = RR, N0 = x, K = 100, t = 50)),
+          type = "l", lty = 1, main = paste("R = ", RR), ylab = "N", xlab = "time")
+}
+mtext(side = 3, outer = T, 
+      text = "Dynamics of Ricker model: perturbing slightly from N = K (here, 100)")
+```
+
+The plots confirm that when $R < 1$, the dynamics are stable and non-oscillatory, when $1 < R < 2$, the dynamics are stable and oscillatory, and when $R > 2$, the dynamics are unstable and oscillatory.
+
+\clearpage
+
+#### Deriving the Beverton-Holt and Ricker models    
+
+To keep the main body clean, I have moved the steps in the derivatives of the two models here.  
+
+*First*, the Beverton-Holt Model:   
+
+$$\frac{d}{dN} \frac{RN_{t}}{1+[(R-1)/K]N_{t}}$$  
+$$ = \frac{\frac{d}{dN}RN_{t}*1+[(R-1)/K]N_{t} - RN_{t}*\frac{d}{dN}1+[(R-1)/K]N_{t}}{(1+[(R-1)/K]N_{t})^{2}}$$
+
+$$ = \frac{R*(1+[(R-1)/K]N_{t}) - RN_{t}*[(R-1)/K]}{(1+[(R-1)/K]N_{t})^{2}}$$
+
+$$ = \frac{R + [R*(R-1)/K]N_{t} - RN_{t}*[(R-1)/K]}{(1+[(R-1)/K]N_{t})^{2}}$$
+
+$$ = \frac{R}{(1+[(R-1)/K]N_{t})^{2}}$$
+
+$$ = \frac{R}{1 + 2N_{t} \frac{(R-1)}{K} + \left(\frac{(R-1)}{K}N_{t}\right)^{2}}$$
+
+$$ = \frac{R}{1 + 2N_{t} \frac{(R-1)}{K} + \left(\frac{(R-1)}{K}\right)^{2}N_{t}^{2}}$$
+
+$$ = \frac{R}{1 + 2N_{t} \frac{(R-1)}{K} + \left(\frac{(R-1)^{2}}{K^{2}}\right)N_{t}^{2}}$$
+
+$$ = \frac{R}{\frac{K^{2}}{K^{2}} + \frac{2N_{t}K (R-1)}{K^{2}}+ \left(\frac{(R-1)^{2}}{K^{2}}\right)N_{t}^{2}}$$
+
+$$ = \frac{RK^{2}}{K^{2} + 2N_{t}K (R-1)+ (R-1)^{2}N_{t}^{2}}$$
+
+$$ = \frac{RK^{2}}{[K + (R-1)N_{t}]^{2}}$$
+
+\clearpage
+
+*Second*, the Ricker model: 
+
+$$\frac{d}{dN} N_{t}*exp\left[R\left(1-\frac{N_{t}}{K}\right)\right]$$
+
+$$ = \left(\frac{d}{dN}N_{t}\right)*exp\left[R\left(1-\frac{N_{t}}{K}\right)\right] + N_{t}*\left[\frac{d}{dN}exp\left[R\left(1-\frac{N_{t}}{K}\right)\right]\right]$$
+
+$$ = exp\left[R\left(1-\frac{N_{t}}{K}\right)\right] + N_{t}*\left[\frac{d}{dN} exp\left(R-\frac{RN_{t}}{K}\right)\right]$$
+
+
+$$ = exp\left[R\left(1-\frac{N_{t}}{K}\right)\right] + N_{t}*\left[\frac{d}{dN}\left(R-\frac{RN_{t}}{K}\right)\right] * exp\left[R\left(1-\frac{N_{t}}{K}\right)\right]$$
+
+$$ = exp\left[R\left(1-\frac{N_{t}}{K}\right)\right] + N_{t}* \left(0 - \frac{R}{K}\right) * exp\left[R\left(1-\frac{N_{t}}{K}\right)\right]$$
+
+$$  = \left(1-\frac{RN_{t}}{K}\right)*exp\left[R\left(1-\frac{N_{t}}{K}\right)\right]$$
