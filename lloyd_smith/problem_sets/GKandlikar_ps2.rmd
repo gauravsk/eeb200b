@@ -1,9 +1,12 @@
 ---
 title: 'EEB 200B: Lloyd-Smith PS 2'
 author: "Gaurav Kandlikar"
-date: "January 15, 2016"
+date: \today
 output: pdf_document
 ---
+```{r echo = FALSE}
+options(digits = 3)
+```
 
 ### Question 1A: Complete the final two columns of the life table.  
 
@@ -35,18 +38,226 @@ $$
 
 ### Question 1E: Calculate the eigenvalues for this matrix by hand. Find the stable age distribution. 
 
-### Question 1E: Calculate the eigenvalues and eigenvectors for this matrix with `R`.
+I will calculate the eigenvalues by using the matrix determinant approach: 
+
+$$\left[\bigg|\begin{array}
+{rr}
+0.6 & 1.5 \\
+0.3 & 0
+\end{array}\bigg| - \lambda \textbf{I} \right] = 0
+$$
+
+$$\left[\bigg|\begin{array}
+{rr}
+0.6 & 1.5 \\
+0.3 & 0
+\end{array}\bigg| - \lambda
+\bigg|\begin{array}
+{rr}
+1 & 0 \\
+0 & 1
+\end{array}\bigg|\right] = 0
+$$
+
+$$\left[\bigg|\begin{array}
+{rr}
+0.6 & 1.5 \\
+0.3 & 0
+\end{array}\bigg| - 
+\bigg|\begin{array}
+{rr}
+\lambda & 0 \\
+0 & \lambda
+\end{array}\bigg|\right] = 0
+$$
+
+$$\left[\bigg|\begin{array}
+{rr}
+(0.6-\lambda) & (1.5-0) \\
+(0.3-0) & (0-\lambda)
+\end{array}\bigg|\right] = 0
+$$
+
+$$(0.6 -\lambda)*(0-\lambda) - (0.3*1.5) = 0$$
+$$\lambda^{2} - 0.6\lambda-0.45 = 0$$
+
+Solving this quadratic equation for $\lambda$: 
+```{r}
+quad <- function(a,b,c) {
+  to_return <- numeric(2)
+  to_return[1] <- (-b+sqrt((b^2)-4*a*c))/(2*a)
+  to_return[2] <- (-b-sqrt((b^2)-4*a*c))/(2*a)
+  
+  return(to_return)
+}
+
+lambdas <- quad(a = 1, b = -0.6, c = -0.45); lambdas
+```
+
+Here, $\lambda_{1}$ = `r lambdas[1]` and $\lambda_{2}$ = `r lambdas[2]`. The dominant eigenvalue `r lambdas[1]` is the long term population growth rate; the eigenvector associated with this eigenvalue will describe the stable age distribution.
+
+To calculate the eigenvectors associated with $\lambda_{1}$, we can use the equation $\textbf{L}\bar{w}_{1} = \lambda_{1}\bar{w}_{1}$:
+
+$$\bigg|\begin{array}
+{rr}
+0.6 & 1.5 \\
+0.3 & 0
+\end{array}\bigg| 
+\bigg|\begin{array}
+{r}
+w_{11} \\
+w_{12}
+\end{array}\bigg| = \lambda 
+\bigg|\begin{array}
+{r}
+w_{11} \\
+w_{12}
+\end{array}\bigg|
+$$
+
+$$0.6(w_{11})+1.5(w_{12}) = 1.03w_{11}$$
+$$0.3(w_{11})+ 0 (w_{12}) = 1.03w_{12}$$
+$$0.29(w_{11}) = w_{12}$$
 
 ```{r}
-ll <- matrix(c(0.6, 1.5, 0.3, 0  ), byrow = T, ncol = 2); ll
+c12 <- .29/(1+.29)
+c11 <- 1-c12
+c(c11, c12)
+```
+
+### Question 1F: Calculate the eigenvalues and eigenvectors for this matrix with `R`.
+
+```{r}
+ll <- matrix(c(0.6, 1.5, 0.3, 0), byrow = T, ncol = 2); ll
 
 ll_eigen <- eigen(ll)
 
 # Take a look at the eigenvalues
 ll_eigen$values
-
+dom_eigval <- ll_eigen$values[1]
 # Normalize the first eigenvector to get stable age distrib
-sad <- ll_eigen$vectors[,1]/(sum(ll_eigen$vectors[,1])); sad
+sad <- as.matrix(ll_eigen$vectors[,1]/(sum(ll_eigen$vectors[,1]))); sad
+
 ```
 
-### Question 1G: Confirm the result in part F by showing that the dominant eigenvector and eigenvalue satisfy the eigenvalue equation $L\bar{v}_{i} = \lambda_{i}\bar{v}_{i}$
+### Question 1G: Confirm the result in part F by showing that the dominant eigenvector and eigenvalue satisfy the eigenvalue equation $L\bar{v}_{1} = \lambda_{i}\bar{v}_{1}$ 
+
+```{r}
+round(ll %*% sad, 5) == round(dom_eigval * sad, 5)
+```
+
+### Question 1H: A survey of variegated wombats across UCLA campus in 2015 observed population sizes of 2000 and 1000. What are the expected population sizes by age for 2016?  
+
+```{r}
+p2015 <- matrix(c(2000, 1000), ncol = 1)
+
+p2016 <- ll %*% p2015; p2016
+```
+
+### Question 1I: If nothing else changes, by what proportion will population grow or shrink from the year 2067 to 2068? And from 2068 to 2069? 
+
+The population should proportionally grow as $\lambda$- here, $\lambda$ = `r dom_eigval`
+
+### Question 1J: The answer to part I is based on model prediction for long term growth of a population. Give three reasons why this prediction might not come true.  
+
+Long term dynamics may be influenced by a number of parameters...
+
+1. Variation in the environment may impact population sizes in a given year- an El Nino year, for example, might change the abundance of a food source- such a change in turn may drive $\lambda$ below 1 and drive the population to extinction! 
+
+***More stuff!!***
+
+### Question 1K: Use `R` to simulate the dynamics of the population for 50 time steps. Plot the absolute number in each age class and the proportion in each age class. Confirm predictions for long term population growth rate and stable age distrubution. 
+
+```{r}
+# First I will write a function to go through the generations 
+project <- function(ll, init, t){
+  to_return <- matrix(0, nrow = 2, ncol = t+1)
+  to_return[, 1] <- init
+  
+  for(time in 2:(t+1)) {
+    to_return[, time] <- as.vector(ll %*%(to_return[,time-1]))
+  }
+  return(to_return)
+}
+
+generations <- 50
+
+population_trajectory <- project(ll, init = c(2000, 1000), generations)
+
+prop <- function(x) {return(c(x[1]/sum(x), x[2]/sum(x)))}
+population_trajectory_props <- apply(population_trajectory, 2, prop)
+
+par(mfrow = c(1,2))
+matplot(t(population_trajectory), ylab = "N", xlab = "Time", 
+        main = "Population growth over time", lty = 1, lwd = 3, type = "l")
+matplot(t(population_trajectory_props), ylab = "N", xlab = "Time", xlim = c(-5, 50),
+        main = "Population growth over time", lty = 1, lwd = 3, type = "l")
+abline(h = sad[1], col = "black", lty = 2, lwd = 2)
+abline(h = sad[2], col = "red", lty = 2, lwd = 2)
+```
+
+\clearpage 
+
+## Question 2: Consider some more complex stage-structured populations. 
+
+### Question 2A: Draw the life cycle graph corresponding to the Leslie matrix: 
+$$\mathbf{L} = \left[\begin{array}
+{rrrr}
+0 & 0 & b_{s} & b_{A} \\
+S_{Y} & 0 & 0 & 0 \\
+0 & S_{J} & 0 & 0 \\
+0 & 0 & S_{S} & S_{A} 
+\end{array}\right]
+$$
+
+### Question 2B: Write the Leslie matrix corresponding to this life cycle graph:  
+
+$$\mathbf{L} = \left[\begin{array}
+{rrrrrrr}
+0 & 0 & 0 & 0 & 0 & b_{5} & b_{6}  \\
+p_{01} & 0 & 0 & 0 & 0 & 0 & c_{6} \\
+p_{02} & p_{12} & 0 & 0 & 0 & 0 & 0\\
+0 & p_{13} & p_{23} & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & p_{34} & 0  & 0 & 0 \\
+0 & 0 & 0 & p_{35} & 0 & s_{5} & p_{65} \\
+0 & 0 & 0 & p_{36} & p_{46} & p_{56} & s_{6} 
+\end{array}\right]
+$$
+
+### Question 2C: Draw the life cycle graph corresponding to this Leslies matrix. What is a biological explanation for the stage classes labeled 3 and 4? 
+
+$$\mathbf{L} = \left[\begin{array}
+{rrrrr}
+0 & b_{1} & b_{2} & b_{3} & 0 \\
+s_{0} & 0 & 0 & 0 & 0 \\
+0 & s_{1} & 0 & 0 & 0 \\
+0 & 0 & s_{2} & s_{3}(1-p_{34}) & s_{4}p_{43}\\
+0 & 0 & 0 & s_{3}p_{43} & s_{4}(1-p_{43})
+\end{array}\right]
+$$
+
+### Question 2D: Write an age structured Leslie matrix corrresponding to this life cycle. And write a stage-structured matrix with as few groups as possible. Is the stage structured matrix an exact match for this life cycle?
+
+$$\mathbf{L} = \left[\begin{array}
+{rrrrrrr}
+0 & 0 & b & b & b & b & b \\
+S_{0} & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & S_{1} & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & S & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & S & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & S & 0 & 0 \\
+0 & 0 & 0 & 0 & 0 & S & 0 
+\end{array}\right]
+$$
+
+The stage structured work can be done with a 3X3 Leslie matrix: 
+$$\mathbf{L} = \left[\begin{array}
+{rrrr}
+0 & 0 & b & b \\
+S_{0} & 0 & 0 & 0 \\ 
+0 & S_{1} & S & 0 \\
+0 & 0 & S & 0
+\end{array}\right]
+$$
+
+The full matrix tells us that this members of this species live for no longer than 6 years-  this information is lost when we make a Lefkovitch(!) matrix.
