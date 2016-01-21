@@ -1,0 +1,52 @@
+---
+title: 'EEB 200B: Lloyd-Smith PS 2'
+author: "Gaurav Kandlikar"
+date: "January 15, 2016"
+output: pdf_document
+---
+
+### Question 1A: Complete the final two columns of the life table.  
+
+|Age, $i$| Fecundity, $b_{i}$  | Number observed $n_{i}$ | Yearly survival, $s_{i}$ | Cumulative survival, $l_{i}$|
+|:----:|:----:|:---------:|:---------:|:---------:|
+|0|0.6|50|0.3| 1 |
+|1|1.5|15|0  |0.3|
+|2|0  |0 |-  |0  |
+
+### Question 1B: Compute $R_{0}$ for this population. Do you expect it to grow or shrink over time? 
+The basic reproductive rate $R_{0}$ can be calculated as
+$$\sum_{n=1}^{i} l_{i}b_{i} = (1*0.6)+(0.3*1.5) = 1.05$$  
+This means that each new offspring is expected to leave behind, on average, 1.05 offsprings of its own- so the population is expected to grow.
+
+### Question 1C: Draw the life cycle graph for this population. How many age classes are needed?  
+
+\begin{figure}[h]
+  \centering
+    \includegraphics[height=80mm]{figures/ps2_q1pc.pdf}
+\end{figure}
+
+### Question 1D: Write down the Leslie matrix that describes the dynamics of the system.  
+$$\mathbf{L} = \left[\begin{array}
+{rr}
+0.6 & 1.5 \\
+0.3 & 0
+\end{array}\right]
+$$
+
+### Question 1E: Calculate the eigenvalues for this matrix by hand. Find the stable age distribution. 
+
+### Question 1E: Calculate the eigenvalues and eigenvectors for this matrix with `R`.
+
+```{r}
+ll <- matrix(c(0.6, 1.5, 0.3, 0  ), byrow = T, ncol = 2); ll
+
+ll_eigen <- eigen(ll)
+
+# Take a look at the eigenvalues
+ll_eigen$values
+
+# Normalize the first eigenvector to get stable age distrib
+sad <- ll_eigen$vectors[,1]/(sum(ll_eigen$vectors[,1])); sad
+```
+
+### Question 1G: Confirm the result in part F by showing that the dominant eigenvector and eigenvalue satisfy the eigenvalue equation $L\bar{v}_{i} = \lambda_{i}\bar{v}_{i}$
