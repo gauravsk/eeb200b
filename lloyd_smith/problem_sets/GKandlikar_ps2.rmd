@@ -196,6 +196,115 @@ abline(h = sad[1], col = "black", lty = 2, lwd = 2)
 abline(h = sad[2], col = "red", lty = 2, lwd = 2)
 ```
 
+### Question 1L: Will an absolute in crease of 0.01 in $b_{0}$ or $s_{0}$ have a greater impact on the long term growth rate of wombats? What about a relative increase of 1% in those two parameters? 
+
+To get at this question, we need to calculate the Sensitivity and Elasticity matrices for this Leslie matrix. We can calculate the sensitivity matrix \textbf{S} as:
+$$\mathbf{S} = \frac{\bar{v}_{1}\bar{w}_{1}^{T}}{\bar{v}_{1}\cdot\bar{w}_{1}}$$
+Then, the elasticity matrix \textbf{E} can be calculated as
+$$\mathbf{E} = \mathbf{S} \frac{L_{i,j}}{\lambda}$$
+
+We still have not calculated the *left eigenvectors* for our Leslie Matrix. Let's do that first so that we have $v_{i}$s:
+
+```{r}
+left_eigens <- eigen(t(ll))
+v1 <- left_eigens$vectors[,1]; v1
+
+# let's also make a vector W11- currently the first eigenvector is stored as 'sad'
+w1 <- sad
+```
+
+With both of these components in hand, we can use the formulae above to calculate \textbf{S} and \textbf{E}:
+
+```{r}
+# Sensitivity matrix:
+ss <- (v1 %*% t(w1))/as.numeric(v1%*%w1)
+print("The Sensitivty matrix:"); ss
+
+ee <- ss*(ll/dom_eigval)
+print("The Elasticity matrix:"); ee
+```
+
+The Sensitivity matrix \textbf{S} above predicts that an absolute increase of 0.01 in $S_{0}$ will have a greater impact on $\lambda$ than the same increase in $b_{0}$.
+
+Conversely, the Elasticity matrix \textbf{E} predicts that a 1% increase in $b_{0}$ will impact $\lambda$ more than the same proportional increase in $s_{0}$. 
+
+We can verify this prediction by manually perturbing the values of $s_{0}$ and $b_{0}$. First, let's verify for an absolue change of 0.01:
+```{r}
+# increase b0 by 0.01
+ll_s1 <- matrix(c(0.6+0.01, 1.5, 0.3, 0), byrow = T, ncol = 2); ll_s1
+lambda_s1 <- eigen(ll_s1)$values[1]
+
+# increase s0 by 0.01
+ll_s2 <- matrix(c(0.6, 1.5, 0.3+0.01, 0), byrow = T, ncol = 2); ll_s2
+lambda_s2 <- eigen(ll_s2)$values[1]
+```
+
+Recall that above, we predicted that perturbing $s_{0}$ by 0.01 will have a greater impact on $\lambda$ than increasing $b_{0}$ by the same amount. Let's verify the prediction:
+```{r}
+lambda_s2 - dom_eigval > lambda_s1 - dom_eigval
+```
+
+Now, let's verify for a proportional increase of 1%:
+```{r}
+# increase b0 by 0.01
+ll_e1 <- matrix(c(1.01*0.6, 1.5, 0.3, 0), byrow = T, ncol = 2); ll_e1
+lambda_e1 <- eigen(ll_e1)$values[1]
+
+# increase s0 by 0.01
+ll_e2 <- matrix(c(0.6, 1.5, 1.01*0.3, 0), byrow = T, ncol = 2); ll_e2
+lambda_e2 <- eigen(ll_e2)$values[1]
+```
+
+Recall that above, we predicted that perturbing $b_{0}$ by 1% will have a greater impact on $\lambda$ than increasing $s_{0}$ by the same proportion. Let's verify the prediction:
+```{r}
+lambda_e1 - dom_eigval > lambda_e2 - dom_eigval
+```
+
+Hurray!
+
+### Question 1M: What is weird about the Elasticity matrix? Play around with different values in the Leslie matrix and develop an intuitive explanation. 
+
+Let's recall the Elasticity matrix \textbf{E}:
+```{r}
+print("The elasticity matrix:"); ee
+```
+
+One surprising feature of this matrix is that the elasticities are equal for $b_{1}$ and $s_{0}$. The best intuitive explanation I can come up for this phenomenon is that both of these parameters eventually determine the reproductive output of a new-born individual one year from birth. So, the same proportional increase in either of these parameters will impact the reproductive value, and therefore $\lambda$ in the same way.  
+
+It will be fun to iterate over a range of $s_{0}$s and check whether this holds:
+```{r}
+s0s <- seq(from = 0.5, to = 2.5, by = 0.1)
+ratios_s0b1 <- numeric(length(s0s))
+for(ii in 1:length(s0s)) {
+  current_ll <- matrix(c(0.6, s0s[ii], 1.5, 0), byrow = T, ncol = 2)
+  lambda <- eigen(current_ll)$values[1]
+  w1 <- eigen(current_ll)$vectors[,1]
+  v1 <- eigen(t(current_ll))$vectors[,1]
+  ss <- (v1 %*% t(w1))/as.numeric(v1%*%w1)
+  ee <- ss*(current_ll/lambda)
+  ratios_s0b1[ii] <- ee[1,2]/ee[2,1]
+}
+ratios_s0b1
+```
+
+Sure enough, the ratio of the elasticies of $s_{0}$ and $b_{1}$ remains 1 for many values of $s_{0}$. To confirm, we can also iterate over a range of $b_{0}$s:
+```{r}
+b0s <- seq(from = 0.1, to = 1.5, by = 0.1)
+ratios_s0b1 <- numeric(length(s0s))
+for(ii in 1:length(s0s)) {
+  current_ll <- matrix(c(0.6, 0.3, 1.5, 0), byrow = T, ncol = 2)
+  lambda <- eigen(current_ll)$values[1]
+  w1 <- eigen(current_ll)$vectors[,1]
+  v1 <- eigen(t(current_ll))$vectors[,1]
+  ss <- (v1 %*% t(w1))/as.numeric(v1%*%w1)
+  ee <- ss*(current_ll/lambda)
+  ratios_s0b1[ii] <- ee[1,2]/ee[2,1]
+}
+ratios_s0b1
+```
+
+Woohoo! 
+
 \clearpage 
 
 ## Question 2: Consider some more complex stage-structured populations. 
