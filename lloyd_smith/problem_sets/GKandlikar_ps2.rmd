@@ -162,9 +162,11 @@ The population should proportionally grow as $\lambda$- here, $\lambda$ = `r dom
 
 Long term dynamics may be influenced by a number of parameters...
 
-1. Variation in the environment may impact population sizes in a given year- an El Nino year, for example, might change the abundance of a food source- such a change in turn may drive $\lambda$ below 1 and drive the population to extinction! 
+1. The long term prediction assumes that both survival and fecundity estimates remain constant- we know that this is an unrealistic assumption, especially when the environment changing in a directional way, as it is now. Warmer temperatures, for instance, might drive down $s_{0}$ or other variables for a number of reasons. If a parameter to which the table is particularly sensitive changes even slightly, the long-term trajectory of the population might change drastically. 
 
-***More stuff!!***
+2. This model does not account for any low-probability events- for example, a freak landslide during a torrential El Nino strom might destroy the wombats' territory and lead to a population crash. The population could then enter some sort of extinction vortex. Similarly, a disease may spread through the population to drive it out. 
+
+3. Let's consider the sad reality that UCLA campus security is unlikely to allow population of marsupials roaming around in the Mildred Mathais gardens to boom!
 
 ### Question 1K: Use `R` to simulate the dynamics of the population for 50 time steps. Plot the absolute number in each age class and the proportion in each age class. Confirm predictions for long term population growth rate and stable age distrubution. 
 
@@ -359,6 +361,10 @@ $$
   \centering
     \includegraphics[height=80mm]{figures/ps2_q2pc.pdf}
 \end{figure}
+
+Stage 3 might be an adult stage with peak fecundity that the organisms stay in for some time, before they leave that stage into a period of zero fecundity (Stage 4). Organisms in stage 4 may return to Stage 3. This might happen if individuals in Stage 3 give birth and are unable to give birth for some period of time immediately thereafter, but are able to give birth again after some time. 
+
+\clearpage
 
 ### Question 2D: Write an age structured Leslie matrix corrresponding to this life cycle. And write a stage-structured matrix with as few groups as possible. Is the stage structured matrix an exact match for this life cycle?
 \begin{figure}[h]
