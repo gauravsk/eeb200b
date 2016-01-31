@@ -235,32 +235,36 @@ Conversely, the Elasticity matrix \textbf{E} predicts that a 1% increase in $b_{
 We can verify this prediction by manually perturbing the values of $s_{0}$ and $b_{0}$. First, let's verify for an absolue change of 0.01:
 ```{r}
 # increase b0 by 0.01
-ll_s1 <- matrix(c(0.6+0.01, 1.5, 0.3, 0), byrow = T, ncol = 2); ll_s1
+ll_s1 <- matrix(c(0.6+0.01, 1.5, 0.3, 0), byrow = T, ncol = 2)
 lambda_s1 <- eigen(ll_s1)$values[1]
 
 # increase s0 by 0.01
-ll_s2 <- matrix(c(0.6, 1.5, 0.3+0.01, 0), byrow = T, ncol = 2); ll_s2
+ll_s2 <- matrix(c(0.6, 1.5, 0.3+0.01, 0), byrow = T, ncol = 2)
 lambda_s2 <- eigen(ll_s2)$values[1]
 ```
 
 Recall that above, we predicted that perturbing $s_{0}$ by 0.01 will have a greater impact on $\lambda$ than increasing $b_{0}$ by the same amount. Let's verify the prediction:
 ```{r}
+# Check that difference is higher when we change s0 by 0.1
+# than when we change b0 by 0.1
 lambda_s2 - dom_eigval > lambda_s1 - dom_eigval
 ```
 
 Now, let's verify for a proportional increase of 1%:
 ```{r}
-# increase b0 by 0.01
-ll_e1 <- matrix(c(1.01*0.6, 1.5, 0.3, 0), byrow = T, ncol = 2); ll_e1
+# increase b0 by 1%
+ll_e1 <- matrix(c(1.01*0.6, 1.5, 0.3, 0), byrow = T, ncol = 2)
 lambda_e1 <- eigen(ll_e1)$values[1]
 
 # increase s0 by 0.01
-ll_e2 <- matrix(c(0.6, 1.5, 1.01*0.3, 0), byrow = T, ncol = 2); ll_e2
+ll_e2 <- matrix(c(0.6, 1.5, 1.01*0.3, 0), byrow = T, ncol = 2)
 lambda_e2 <- eigen(ll_e2)$values[1]
 ```
 
 Recall that above, we predicted that perturbing $b_{0}$ by 1% will have a greater impact on $\lambda$ than increasing $s_{0}$ by the same proportion. Let's verify the prediction:
 ```{r}
+# Check that difference is higher when we change b0 by 1%
+# than when we change s0 by 1%
 lambda_e1 - dom_eigval > lambda_e2 - dom_eigval
 ```
 
