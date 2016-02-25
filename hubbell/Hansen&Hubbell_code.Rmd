@@ -1,0 +1,86 @@
+---
+title: 'EEB 200B: Modeling dynamics from Hansen & Hubbell 1980'
+author: "Gaurav Kandlikar"
+date: \today
+output: pdf_document
+---
+
+```{r}
+library(deSolve)
+hh <- function(time,init,params) {
+  with (as.list(c(time,init,params)), {
+    
+    # description of parameters:
+    # S0, D, mu1, y, Ks1, mu2, y2, KS2 are the params
+    # S, N1, N2 are state variables that need to be in init
+    
+    dSdt  <- (S0-S)*D - (mu1/y1)*(S*N1)/(Ks1+S) - (mu2/y2)*(S*N2)/(Ks2+S)
+    dN1dt <- (mu1*S*N1)/(Ks1+S) - (D*N1)
+    dN2dt <- (mu2*S*N2)/(Ks2+S) - (D*N2)
+    
+    return(list(c(dSdt, dN1dt, dN2dt)))
+  })
+}
+```
+
+```{r experiment-1}
+# Testing it out with parameters from Experiment 1
+params1 <- c(S0 = 5e-6, D = 6e-2, 
+            mu1 = .81, mu2 = .91, 
+            y1 = 2.5e10, y2 = 3.8e10, 
+            Ks1 = 3.0e-6, Ks2 = 3.1e-4)
+inits  <- c(S = 1e-4, N1 = 100, N2 = 100000)
+
+J1 <- with(as.list(params1), {print(Ks1*(D/(mu1-D)))})
+J2 <- with(as.list(params1), {print(Ks2*(D/(mu2-D)))})
+
+ex1 <- as.data.frame(ode(func = hh, y = inits, parms = params1, times = 1:100))
+      
+plot(log10(ex1$N2), type = "l", col = "darkred", lwd = 2, ylim = c(0, 7),
+     main = "Dynamics predicted for Experiment 1", ylab = "log10 (Population size)", xlab = "time")
+lines(log10(ex1$N1), col = "blue", lwd = 2)
+legend("topright", lwd = 2, col = c("darkred", "blue"), 
+       legend = c("Sp2", "Sp1"), bty = "n")
+```
+
+```{r experiment-2}
+# Testing it out with parameters from Experiment 2
+params2 <- c(S0 = 5e-6, D = 7.5e-2, 
+            mu1 = .68, mu2 = .96, 
+            y1 = 6.3e10, y2 = 6.2e10, 
+            Ks1 = 1.6e-6, Ks2 = 1.6e-6)
+inits  <- c(S = 5e-6, N1 = 10000, N2 = 1000)
+
+J1 <- with(as.list(params2), {(Ks1*(D/(mu1-D)))}); J1
+J2 <- with(as.list(params2), {(Ks2*(D/(mu2-D)))}); J2
+
+ex2 <- as.data.frame(ode(func = hh, y = inits, parms = params2, times = 1:200))
+      
+plot(log10(ex2$N2), type = "l", col = "darkred", lwd = 2, ylim = c(0, 7),
+     main = "Dynamics predicted for Experiment 2", ylab = "log(Population size)",
+     xlab = "time")
+lines(log10(ex2$N1), col = "blue", lwd = 2)
+legend("topright", lwd = 2, col = c("darkred", "blue"), 
+       legend = c("Sp2", "Sp1"), bty = "n")
+```
+
+```{r experiment-3}
+# Testing it out with parameters from Experiment 3
+params3 <- c(S0 = 5e-6, D = 7.5e-2, 
+            mu1 = .68, mu2 = .41, 
+            y1 = 6.3e10, y2 = 6.2e10, 
+            Ks1 = 1.6e-6, Ks2 = 0.9e-6)
+inits  <- c(S = 5e-6, N1 = 100, N2 = 100)
+
+J1 <- with(as.list(params3), {print(Ks1*(D/(mu1-D)))})
+J2 <- with(as.list(params3), {print(Ks2*(D/(mu2-D)))})
+
+ex3 <- as.data.frame(ode(func = hh, y = inits, parms = params3, times = 1:100))
+      
+plot(log10(ex3$N2), type = "l", col = "darkred", lwd = 2, ylim = c(0, 7),
+     main = "Dynamics predicted for Experiment 3", ylab = "log10 (Population size)", xlab = "time")
+lines(log10(ex3$N1), col = "blue", lwd = 2)
+legend("topright", lwd = 2, col = c("darkred", "blue"), 
+       legend = c("Sp2", "Sp1"), bty = "n")
+```
+
