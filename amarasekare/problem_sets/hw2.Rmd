@@ -1,0 +1,180 @@
+---
+title: 'EEB 200B: Amarasekare PS 2'
+author: "Gaurav Kandlikar"
+date: \today
+output: pdf_document
+---
+
+## Question 1: Consider a version of the Lotka Volterra predator prey model with prey self limitation:
+
+$$\frac{dR}{dt} = rR*(1-\alpha_{R}R) - aRC$$
+$$\frac{dC}{dt} = eaRC - dC$$
+
+where $\alpha_{R}$ is the intraspecific competition parameter for the prey. 
+
+### Question i: Solve for all equilibria of the model
+We solve for equilibrium by setting $\frac{dR}{dt}$ and  $\frac{dC}{dt}$ to zero.   
+**First**, equilibrium for the predator:  
+$$0 = \frac{dC}{dt} = eaRC - dC$$ 
+$$\implies 0 = C*(eaR - d)$$ 
+$$\implies \boxed{R^* = \frac{d}{ea}}$$ 
+
+**Second**, equilibrium for the prey:  
+$$0 = \frac{dR}{dt} = rR*(1-\alpha_{R}R) - aRC$$
+$$\implies 0 = R*\left [r*(1-\alpha_{R}R) - aC \right]$$
+$$\implies r*(1-\alpha_{R}R) = aC$$
+$$\implies \frac{r*(1-\alpha_{R}R^{*})}{a} = C^*$$
+Substituting the equation above for $R^*$ into this equation to determine where the isoclines of resource and consumer intersect, we get: 
+$$\boxed{\frac{r*(1-\alpha_{R}\frac{d}{ea})}{a} = C^*}$$
+
+### Question ii: Construct the Jacobian matrix and evaluate at the coexistence equilibrium. Use the Routh-Hurwitz critera to evaluate the stability. Under what conditions is the equilibrium stable?  
+
+$$\mathbf{J} = \left[\begin{array}
+{cc}
+\frac{\partial \frac{dR}{dt}}{\partial R} & \frac{\partial \frac{dR}{dt}}{\partial C} \\
+\\
+\frac{\partial \frac{dC}{dt}}{\partial R} & \frac{\partial \frac{dC}{dt}}{\partial C}
+\end{array}\right]$$
+
+
+$$\mathbf{J} = \left[\begin{array}
+{cc}
+r-2\alpha_{R}rR-aC & -aR \\
+eaC & eaR-d
+\end{array}\right]$$
+
+To evaluate this at the coexistence equilibrium, we recall the functions for per capita growth rate: 
+
+$$\frac{dR}{dt}\frac{1}{R} = r*(1-\alpha_{R}R) - aC$$
+$$\frac{dC}{dt}\frac{1}{C} = eaR - d$$
+
+When the system is at equilibrium, the per capita growth rates are (by definition) 0- if we substitute this into the equations in the Jacobian above (rewriting  $\mathbf{J}_{11}$ as $r(1-\alpha_{R}R)-aC-\alpha_{R}rR$), we get:
+
+$$\boxed{\mathbf{J_{eq}} = \left[\begin{array}
+{rr}
+-\alpha_{R}rR & -aR \\
+\\
+eaC & 0
+\end{array}\right]}$$
+
+First $Tr(\mathbf{J}_{eq}) = \mathbf{J}_{11}+\mathbf{J}_{22}$, which is a negative number plus zero.   
+$\therefore A_{1} = -(Tr(\mathbf{J})) > 0$.  
+
+
+Second, $Det(\mathbf{J}_{eq}) = \mathbf{J}_{11}*\mathbf{J}_{22} - \mathbf{J}_{21}*\mathbf{J}_{12}$, which is zero minus a negative number. 
+$\therefore A_{2} = Det(\mathbf{J}) > 0$. 
+
+Since $A_{1} > 0, A_{2} > 0$, **this system has a stable equilibrium for all values of the parameters**. 
+
+### Question iii: Based on this analysis, what can we say about the effects of a prey self limitation on predator-prey oscillations?
+If the model includes no prey self limitation, then the $\mathbf{J}_{11}$ term is zero- since the Routh Hurwitz criteria require that $Tr(\mathbf{J}) < 0$ for an equilibrium to be stable, resource-consumer dynamics without resource self limitation has no stable equilibrium. If we introduce self-limitation of resource, then $\mathbf{J}_{11} < 0$, as shown above- this switches the system into one with a stable equilibrium.
+
+\clearpage
+
+## Question 2: Consider a version of the Lotka-Volterra predator-prey model with a Type II functional response of the predator: 
+$$\frac{dR}{dt} = rR - \frac{aRC}{1+ahR}$$
+$$\frac{dC}{dt} = \frac{eaRC}{1+ahR} - dC$$
+where $h$ is the predator handling time. 
+
+### Question i: Solve for all equilibria of the model. 
+There are trivial equilibria at $[R, C] = [0, 0]$ and $[R, C] = [\infty, 0]$.
+
+Now we solve for the internal equilibria: 
+
+*First*, the consumer equilibrium:
+$$ 0 = \frac{dC}{dt} = \frac{eaRC}{1+ahR} - dC = C*\left[\frac{eaR}{1+ahR} - d\right]$$
+$$\implies \frac{eaR}{1+ahR} = d \implies eaR = d+dahR$$ 
+$$\implies eaR - dahR = d \implies R(ea-dah) = d$$
+$$\implies \boxed{R^* = \frac{d}{ea-dah}}$$
+
+*Second*, the resource equilibrium:  
+$$ 0 = \frac{dR}{dt} = rR - \frac{aRC}{1+ahR} = R\left[r - \frac{aC}{1+ahR}\right]$$
+$$\implies r = \frac{aC}{1+ahR} \implies r + rahR aC$$
+$$\implies C^* = \frac{r(1+ahR)}{a}$$
+
+To solve for the point at which the isoclines intersect, we substitute the expression for $R^*$ from above to get:
+$$\boxed{C^* = \frac{r}{a}\left(1+\frac{hd}{e-dh}\right)}$$
+
+So, the internal equilibrium for this system is at $[R^*, C^*] = \left[\frac{d}{ea-dah}, \frac{r}{a}\left(1+\frac{hd}{e-dh}\right)\right]$
+
+### Question ii: Construct the Jacobian matrix and evaluate it at the coexistence equilibrium. Show algebraically that J 22 = 0. What does J 22 = 0 signify biologically?
+
+$$\mathbf{J}_{11} = \frac{\partial \frac{dR}{dt}}{\partial R} =  r - \frac{(1+ahR)(aC) - (ah)(aRC)}{(1+ahR)^2} = r-\frac{aC}{(1+ahR)^2}$$
+
+$$\mathbf{J}_{12} = \frac{\partial \frac{dR}{dt}}{\partial C} =  r - \frac{aC}{(1+ahR)^2}$$
+
+$$\mathbf{J}_{21} = \frac{\partial \frac{dC}{dt}}{\partial R} =  \frac{(1+ahR)(eaC) - (ah)(eaRC)}{(1+ahR)^2} = \frac{eaC}{(1+ahR)^2}$$
+
+$$\mathbf{J}_{22} = \frac{\partial \frac{dC}{dt}}{\partial C} =  \frac{eaR}{(1+ahR)}-d$$
+
+Pulling these partial derivatives together into the Jacobian:
+$$\mathbf{J} = \left[\begin{array}
+{cc}
+r-\frac{aC}{(1+ahR)^2} & r - \frac{aC}{(1+ahR)^2} \\
+\\
+\frac{eaC}{(1+ahR)^2} & \frac{eaR}{(1+ahR)}-d
+\end{array}\right]$$
+
+We can now evaluate the Jacobian at equilibrium. To do this, recall the per capita growth rate equations: 
+
+$$\frac{dR}{Rdt} = r - \frac{aC}{1+ahR}$$
+$$\frac{dC}{Cdt} = \frac{eaR}{1+ahR} - d$$
+
+At equilibrium, the values of both of these are 0, as the population is not changing in size.  
+The per capita growth rate expression for the consumer $C$ is identical to the expression of $\mathbf{J}_{22}$, so we can set that term to 0. This $J_{22}$ term represents the dependence of $\frac{dC}{dt}$ on $C$- in other words, the feedback of consumer population size on its growth rate. When this is zero, the only control on consumer population dynamics is exerted by the resource.  
+
+If we rewrite $\mathbf{J}_{11}$ as $r-\frac{aC}{(1+ahR)}\frac{1}{(1+ahR)}$ and keep in mind that $r - \frac{aC}{1+ahR} = 0$ at equilibrium, we see that $\mathbf{J}_{11} > 0$, as $\frac{aC}{1+ahR} = r > \frac{aC}{(1+ahR)}\frac{1}{(1+ahR)}$. So we see that at equilibrium, the Jacobian takes the form 
+
+$$\mathbf{J} = \left[\begin{array}
+{cc}
++ & - \\
++ & 0
+\end{array}\right]$$
+
+### Question iii: Use Routh-Hurwitz criteria to evaluate the stability of the coexistence equilibrium. Under what conditions is the coexistence equilibrium stable?
+
+From the simplified Jacobian above, we see that $Tr(\mathbf{J_{eq}}) > 0$. The Routh-Hurwitz criteria state that the Jacobian must have a negative Trace for it to remain stable, so we see immediately that the system can never have a stable equilibrium.  
+
+### Question iv: Based on your analysis, what can you say about the effect(s) of a Type II functional response on predator-prey oscillations?
+
+When there is a Type II functional response of the consumer and no self-limitation of the resource, the system has no stable equilibria. Mathematically, this is because $\mathbf{J_{11}}$ switches from 0 (no resource self limitation, type I functional response) to being positive. Biologically, we can imagine that the consumer is not efficient at limitation the resource at large resource population sizes, as the consumer cannot deal with all of it- so, the resource rises and falls more dramatically. 
+
+\clearpage
+
+## Question 3: Consider the paradox of enrichment model:
+$$\frac{dR}{dt} = rR(1-\alpha_{R}R) - \frac{aRC}{1+ahR}$$
+$$\frac{dC}{dt} = \frac{eaRC}{1+ahR} - dC$$
+
+### Question i: Solve for all equilibria of the model.
+
+The consumer growth equation has not changed - it is still a Type II response curve. So, 
+
+$$ \frac{dC}{dt} = 0 \text{  when  } \boxed{R = \frac{d}{ea-dah}}$$
+
+Second, we solve for the resource isocline: 
+
+$$0 = \frac{dR}{dt} = rR(1-\alpha_{R}R) - \frac{aRC}{1+ahR} = R \left[r(1-\alpha_{R}R) - \frac{aC}{1+ahR}\right]$$
+$$\implies r(1-\alpha_{R}R) = \frac{aC}{1+ahR} \implies C = \frac{r(1-\alpha_{R}R)(1+ahR)}{a}$$
+
+To find where this isocline crosses the consumer isocline, we substitute the expression for $R^*$ from aboive to get
+$$C = \frac{r}{a}\left[1+\frac{ahd}{ea-dah}-\frac{\alpha_{R}d}{ea-dah}-\frac{a\alpha_{R}hd^2}{(ea-dah)^2}\right]$$
+Simplify to get
+$$\frac{dR}{dt} = 0 \text{  when  }\boxed{C = \frac{r}{a}\left[1+\frac{hd}{e-dh}-\frac{\alpha_{R}d}{ea-dah}-\frac{\alpha_{R}hd^2}{a(e-dh)^2}\right]}$$
+
+As before, this model also has two boundary equilibria, at $[R^*, C^*] = [0, 0]$ and at $[R^*, C^*] = [\frac{1}{\alpha_R}, 0]$.   
+
+### Question ii: Use the expression for the resource species' per capita growth rate to illustrate how the balance between negative and positive feedback dampens or amplifies oscillations.  
+$$\frac{dR}{dt}\frac{1}{R} = r(1-\alpha_{R}R) - \frac{aC}{1+ahR}$$
+
+*Note*- I tried using verbal reasoning to explain how oscillations might be dampened or amplified based on the value of $R^*$, but wasn't able to convince myself- the maths work out nicely, though!
+
+One way to approach this question is to check whether $R$ has an impact on the sign of $\mathbf{J}_{11}$:
+
+$$\mathbf{J}_{11} = \frac{\partial{\frac{dR}{dt}}}{\partial R} = r - 2r\alpha_{R}R - \frac{(1+ahR)(aC) - (aRC)(ah)}{(1+ahR)^2} = r -2r\alpha_{R}R - \frac{aC}{(1+ahR)^2}$$
+Rewrite the final term: 
+$$\mathbf{J}_{11} = r(1-\alpha_{R}R)-\left(\frac{aC}{(1+ahR)}\frac{1}{(1+ahR)}\right) - r\alpha_{R}R$$
+
+We have shown in Question 2.ii that at equilibrium (i.e. when per-capita growth rate of the resource is zero), $r(1-\alpha_{R}R)-\left(\frac{aC}{(1+ahR)}\frac{1}{(1+ahR)}\right) > 0$- therefore, $\mathbf{J}_{11}$ takes the from "$\text{positive number } - r\alpha_{R}R$". 
+
+
+So, $\lim_{R^* \to 0} J_{11} > 0$, whereas $\lim_{R^* \to \infty} J_{11} < 0$. In other words, if the $R^*$ for the system is large, the Jacobian will have a negative trace and the equilibrium will be stable (i.e. dampened oscillations after perturbation); otherwise, the trace of the Jacobian will not be negative and the equilibrium will not be stable.
