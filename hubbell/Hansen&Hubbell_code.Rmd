@@ -1,16 +1,17 @@
 ---
-title: 'EEB 200B: Modeling dynamics from Hansen & Hubbell 1980'
+title: 'Modeling dynamics of Hansen & Hubbell 1980'
 author: "Gaurav Kandlikar"
 date: \today
 output: pdf_document
 ---
 
-```{r}
+I've written the following function to solve the differential equations. It uses the `R` package `deSolve`, which solves for the equations using Euler's methods. 
+```{r, message=FALSE}
 library(deSolve)
 hh <- function(time,init,params) {
   with (as.list(c(time,init,params)), {
     
-    # description of parameters:
+    # description of variables:
     # S0, D, mu1, y, Ks1, mu2, y2, KS2 are the params
     # S, N1, N2 are state variables that need to be in init
     
@@ -23,26 +24,30 @@ hh <- function(time,init,params) {
 }
 ```
 
+We can run the simulation usiung parameter values from Experiment 1. The expectation is that in the long run, the C-8 bacteria outcompetes PAO283, because both have identical $r$s but the former has a lower $K$.  
+
 ```{r experiment-1}
 # Testing it out with parameters from Experiment 1
-params1 <- c(S0 = 5e-6, D = 6e-2, 
+params1 <- c(S0 = 1e-4, D = 6e-2, 
             mu1 = .81, mu2 = .91, 
             y1 = 2.5e10, y2 = 3.8e10, 
             Ks1 = 3.0e-6, Ks2 = 3.1e-4)
 inits  <- c(S = 1e-4, N1 = 100, N2 = 100000)
 
-J1 <- with(as.list(params1), {print(Ks1*(D/(mu1-D)))})
-J2 <- with(as.list(params1), {print(Ks2*(D/(mu2-D)))})
+# Confirm that Js are distinct:
+J1 <- with(as.list(params1), {(Ks1*(D/(mu1-D)))}); J1
+J2 <- with(as.list(params1), {(Ks2*(D/(mu2-D)))}); J2
 
 ex1 <- as.data.frame(ode(func = hh, y = inits, parms = params1, times = 1:100))
       
-plot(log10(ex1$N2), type = "l", col = "darkred", lwd = 2, ylim = c(0, 7),
+plot(log10(ex1$N2), type = "l", col = "darkred", lwd = 2, ylim = c(0, 8),
      main = "Dynamics predicted for Experiment 1", ylab = "log10 (Population size)", xlab = "time")
 lines(log10(ex1$N1), col = "blue", lwd = 2)
-legend("topright", lwd = 2, col = c("darkred", "blue"), 
-       legend = c("Sp2", "Sp1"), bty = "n")
+legend("topright", lwd = 2, col = c("blue", "darkred"), 
+       legend = c("C-8", "PAO283"), bty = "n")
 ```
 
+Next, we run the simulation usiung parameter values from Experiment 2. The expectation is that in the long run, the C-8NalRSpecS outcompetes C-8 NalSSpecR, because both have identical $K$s but the former has a higher $r$.  
 ```{r experiment-2}
 # Testing it out with parameters from Experiment 2
 params2 <- c(S0 = 5e-6, D = 7.5e-2, 
@@ -51,6 +56,7 @@ params2 <- c(S0 = 5e-6, D = 7.5e-2,
             Ks1 = 1.6e-6, Ks2 = 1.6e-6)
 inits  <- c(S = 5e-6, N1 = 10000, N2 = 1000)
 
+# Confirm that Js are distinct:
 J1 <- with(as.list(params2), {(Ks1*(D/(mu1-D)))}); J1
 J2 <- with(as.list(params2), {(Ks2*(D/(mu2-D)))}); J2
 
@@ -60,10 +66,12 @@ plot(log10(ex2$N2), type = "l", col = "darkred", lwd = 2, ylim = c(0, 7),
      main = "Dynamics predicted for Experiment 2", ylab = "log(Population size)",
      xlab = "time")
 lines(log10(ex2$N1), col = "blue", lwd = 2)
-legend("topright", lwd = 2, col = c("darkred", "blue"), 
-       legend = c("Sp2", "Sp1"), bty = "n")
+legend("topright", lwd = 2, col = c("blue", "darkred"), 
+       legend = c("C-8 NalR SpecS", "C-8 NalS SpecR"), bty = "n")
 ```
 
+
+Finally, we run the model with parameters from experiment 3. The expectation is that the two strains coexist indefinitely, as both have different values of $r$ and $K$ but in combination have similar values of $J$. 
 ```{r experiment-3}
 # Testing it out with parameters from Experiment 3
 params3 <- c(S0 = 5e-6, D = 7.5e-2, 
@@ -72,15 +80,16 @@ params3 <- c(S0 = 5e-6, D = 7.5e-2,
             Ks1 = 1.6e-6, Ks2 = 0.9e-6)
 inits  <- c(S = 5e-6, N1 = 100, N2 = 100)
 
-J1 <- with(as.list(params3), {print(Ks1*(D/(mu1-D)))})
-J2 <- with(as.list(params3), {print(Ks2*(D/(mu2-D)))})
+# Confirm that Js are nearly identical:
+J1 <- with(as.list(params3), {(Ks1*(D/(mu1-D)))}); J1
+J2 <- with(as.list(params3), {(Ks2*(D/(mu2-D)))}); J2
 
 ex3 <- as.data.frame(ode(func = hh, y = inits, parms = params3, times = 1:100))
       
 plot(log10(ex3$N2), type = "l", col = "darkred", lwd = 2, ylim = c(0, 7),
      main = "Dynamics predicted for Experiment 3", ylab = "log10 (Population size)", xlab = "time")
 lines(log10(ex3$N1), col = "blue", lwd = 2)
-legend("topright", lwd = 2, col = c("darkred", "blue"), 
-       legend = c("Sp2", "Sp1"), bty = "n")
+legend("topright", lwd = 2, col = c("blue", "darkred"), 
+       legend = c("C-8 NalR SpecS", "C-8 NalS SpecR"), bty = "n")
 ```
 
