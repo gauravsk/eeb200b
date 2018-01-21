@@ -1,0 +1,80 @@
+---
+title: 'EEB 200B: Lloyd-Smith PS 2'
+output: pdf_document
+---
+
+```{r echo = FALSE}
+options(digits = 3)
+```
+
+### Question 1A: Complete the final two columns of the life table.  
+
+|Age, $i$| Fecundity, $b_{i}$  | Number observed $n_{i}$ | Yearly survival, $s_{i}$ | Cumulative survival, $l_{i}$|
+  |:----:|:----:|:---------:|:---------:|:---------:|
+  |0|0.6|50|||
+  |1|1.5|15 ||
+  |2|0  |0 ||  |
+  
+### Question 1B: Compute $R_{0}$ for this population. Do you expect it to grow or shrink over time? 
+
+### Question 1C: Draw the life cycle graph for this population. How many age classes are needed?  
+
+### Question 1E: Calculate the eigenvalues for this matrix by hand. Find the stable age distribution. 
+
+### Question 1F: Calculate the eigenvalues and eigenvectors for this matrix with `R`.
+
+### Question 1G: Confirm the result in part F by showing that the dominant eigenvector and eigenvalue satisfy the eigenvalue equation $L\bar{v}_{1} = \lambda_{i}\bar{v}_{1}$ 
+
+### Question 1H: A survey of variegated wombats across UCLA campus in 2015 observed population sizes of 2000 and 
+### Question 1I: If nothing else changes, by what proportion will population grow or shrink from the year 2067 to 2068? And from 2068 to 2069? 
+
+### Question 1J: The answer to part I is based on model prediction for long term growth of a population. Give three reasons why this prediction might not come true.  
+
+### Question 1K: Use `R` to simulate the dynamics of the population for 50 time steps. Plot the absolute number in each age class and the proportion in each age class. Confirm predictions for long term population growth rate and stable age distrubution. 
+
+### Question 1L: Will an absolute in crease of 0.01 in $b_{0}$ or $s_{0}$ have a greater impact on the long term growth rate of wombats? What about a relative increase of 1% in those two parameters? 
+
+
+\clearpage 
+
+## Question 2: Consider some more complex stage-structured populations. 
+
+### Question 2A: Draw the life cycle graph corresponding to the Leslie matrix: 
+$$\mathbf{L} = \left[\begin{array}
+{rrrr}
+0 & 0 & b_{s} & b_{A} \\
+S_{Y} & 0 & 0 & 0 \\
+0 & S_{J} & 0 & 0 \\
+0 & 0 & S_{S} & S_{A} 
+\end{array}\right]
+$$
+
+
+
+### Question 2B: Write the Leslie matrix corresponding to this life cycle graph:  
+\begin{figure}[h]
+\centering
+\includegraphics[height=80mm]{figures/ps2_q2pb.png}
+\end{figure}
+
+### Question 2C: Draw the life cycle graph corresponding to this Leslies matrix. What is a biological explanation for the stage classes labeled 3 and 4? 
+
+$$\mathbf{L} = \left[\begin{array}
+{rrrrr}
+0 & b_{1} & b_{2} & b_{3} & 0 \\
+s_{0} & 0 & 0 & 0 & 0 \\
+0 & s_{1} & 0 & 0 & 0 \\
+0 & 0 & s_{2} & s_{3}(1-p_{34}) & s_{4}p_{43}\\
+0 & 0 & 0 & s_{3}p_{34} & s_{4}(1-p_{43})
+\end{array}\right]
+$$
+
+\clearpage
+
+### Question 2D: Write an age structured Leslie matrix corrresponding to this life cycle. And write a stage-structured matrix with as few groups as possible. Is the stage structured matrix an exact match for this life cycle?
+\begin{figure}[h]
+\centering
+\includegraphics[height=80mm]{figures/ps2_q2pd.png}
+\end{figure}
+
+
