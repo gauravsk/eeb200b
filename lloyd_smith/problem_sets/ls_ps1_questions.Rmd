@@ -1,0 +1,49 @@
+---
+title: 'EEB 200B: Lloyd-Smith PS 1'
+output: pdf_document
+---
+
+## Question 1
+\textsc{The logistic model of density density dependence assumes that the per capita growth rate of the population decreases linearly with increasing N. However, it is not necessarily true that per capita growth rates deecrease monotonically with N. Under some circumstances per capita growth rates may increase with N at very low densities, then decrease as densities become higher. This phenomenon is called the Allee effect. The following equation describes a continuous time population model with an Allee effect combined with logistic density dependance:}
+
+$$\frac{dN}{dT} = rN \left(1-\frac{N}{K}\right)\left(\frac{N}{A}-1\right)$$
+
+### Part A: Find all equilibrium points of this model.
+
+### Part B: Sketch the population growth rate $dN/dT$ as a function of $N$ for $r > 0$. Predict stability of the equilibria.   
+
+### Part C: Use `R` to plot the population growth rate $dN/dT$ as a function of $N$ for $r < 0$. Mark the stability of the equilibria. 
+
+### Part D: Confirm predictions for $r > 0$ using local stabilty analysis 
+
+
+### Part E: What does this mean for the fate of populations with $N < A$? How about for populations with $A < N < K$?  
+
+### Part F: Describe three mechanisms that could give rise to Allee effects in a population.  
+
+----------
+
+## Question 2
+\textsc{Briefly describe the logic underlying local stability analysis for nonlinear population models. What is the role of Taylor expansion? What is the relation to linear models of population growth? Why is it "local" stability analysis?}
+
+------------
+
+## Question 3
+\textsc{Consider two discrete time models for population dynamics:}
+
+- The Beverton-Holt model: 
+$$N_{t+1} = \frac{RN_{t}}{1+[(R-1)/K]N_{t}}, R,K > 0$$
+
+- The Ricker model:  
+$$N_{t+1} = N_{t} \text{  exp }\left[R\left(1-\frac{N_{t}}{K}\right)\right], K > 0$$
+
+### Part A: Find all equilibrium points 
+
+### Part B:  Calculate local stability criteria for each equilibrium point. Over what ranges of $R$ is each equilibrium point stable or unstable? Also specify ranges where $N$ will oscillate.  
+
+### Part C: Assume $K = 100$. Use `R` to plot $N_{t+1}$ vs $N_{t}$ for a range of values of $R$. Based on these plots, can the model display undamped oscillations or chaotic dynamics for any values of $R$? Why/not?
+
+### Part D: Write a script to simulate dynamics of the model (i.e. $N_{t}$ vs $t$). For the largest equilibrium point (i.e. highest $N^{*}$) use simulations to verify the results of local stability analyses. Explore different values of $R$ to test predictions about whether chaos is possible. If chaotic, demonstrate extreme sensitivity to initial conditions by differeing $N_{0}$ by tiny bits. Contrast the chaotic model to ones where the dynamics are stable. 
+
+#### Part E: Use a computer to make a bifurcation plot showing the long term model dynamics over the interesting range of $R$. 
+
